@@ -1,0 +1,30 @@
+# config.yaml file
+current_config:
+    churn_client
+
+churn_client:
+    name: client
+    sql: SELECT * FROM HBG_DATASCIENCE.SANDBOX_ANALYTICS.FCT_CHURN_MODELLING_DATA_AGG limit 100
+    storage: local
+    target_metric: GROSS_SALES
+    query_predict_data:
+    extra: [{ph: 1, cp: 1}]
+    mlflow:
+        registered_model_name: churn_client_model
+        model_version: 1
+        tracking_uri: http://localhost:5000
+        experiment_name: experiment_1
+        tags:
+
+churn_hotel:
+    name: hotel
+    sql: SELECT * FROM HBG_DATASCIENCE.SANDBOX_ANALYTICS.FCT_HOTEL_CHURN_AGG
+    storage: local
+    target_metric: GROSS_COMMERCIAL_COST
+    extra: [{ph: 1, cp: 1}]
+    mlflow:
+        registered_model_name: churn_hotel_model
+        model_version: 1
+        tracking_uri:
+        experiment_name:
+        tags:
