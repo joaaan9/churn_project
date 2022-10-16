@@ -7,7 +7,7 @@ from functions import BaseFunctions, ApplyFunctions, apply_functions
 
 class TransformData:
     """
-    Transofmr Data class: calculates target column and features depending on the params of the project
+    Transform Data class: calculates target column and features depending on the params of the project
     :returns DataFrame with the target column and features applied
     """
     def __init__(
@@ -35,7 +35,6 @@ class TransformData:
         return df_all
 
     def calculate_target(self):
-        targets = []
         vars = config.get_var("extra")[0]
         target_combination = {"PH": vars["ph"], "CP": vars["cp"], "F_SLOT": 4 - vars["ph"] + vars["cp"] - 1, "L_SLOT": 4 - vars["ph"]}
         targets_row = self.df.loc[(self.df["TIME_SLOT"] <= target_combination["F_SLOT"]) & (self.df["TIME_SLOT"] >= target_combination["L_SLOT"]), :]
@@ -47,10 +46,8 @@ class TransformData:
         targets_agg[f"CHURN_PH_{target_combination['PH']}_CP_{target_combination['CP']}S"] = targets_agg[
             f"{self.target_metric}_TARGET_PH_{target_combination['PH']}_CP_{target_combination['CP']}"
         ].apply(lambda x: True if x < 0.005 else False)
-        targets.append(targets_agg)
 
-        targets = pd.concat(targets, axis=1, join="inner")
-        return targets
+        return targets_agg
 
 
     def calculate_features(self):
@@ -82,18 +79,18 @@ class TransformData:
             list_func = x[1] if isinstance(x[1], list) else [x[1]]
 
             for func in list_func:
-                if func != BaseFunctions.ISNULL:
+                if func.value != "isnull":
 
                     df_features_final[f"FF_{x[0]}_{func.value}_{tag}".upper()] = df_features_final.loc[:, x[0].upper()]
 
-                    if BaseFunctions.ISNULL in list_func:
+                    if list_func[0].value == "isnull":
                         f_isnull_date[f"FF_{x[0]}_{func.value}_{tag}".upper()] = func
-                    elif isinstance(func, ApplyFunctions):
+                    elif func.value == "diff_date_min" or func.value == "diff_date_max":
                         f_apply[f"FF_{x[0]}_{func.value}_{tag}".upper()] = func
                     else:
                         f_columns[f"FF_{x[0]}_{func.value}_{tag}".upper()] = func.value
 
-        df_basefunctions = df_features_final.groupby(["PK"]).agg(f_columns)
+        df_basefunctions = df_features_final.groupby("PK").agg(f_columns)
 
 
         for col in f_isnull_date:

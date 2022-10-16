@@ -29,8 +29,9 @@ def create_features(df):
     :param df: dataframe on which we are creating the features
     :return:
     """
-    df["today"] = transform_today_data(df, 4)
-    df["scenarios"] = transform_scenarios_data(df, 4)
-    return df
+    res = {}
+    res["today"] = transform_today_data(df, 4)
+    res["scenarios"] = transform_scenarios_data(df, 4)
+    return res
 
 

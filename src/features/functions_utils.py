@@ -199,7 +199,8 @@ class function_utils:
             result["SCENARIO_DATE"] = m
             scenarios.append(result)
             print("Done scenario: " + str(m))
-            print(result.agg({f"{target_metric}_TARGET_PH_1_CP_1": "sum", f"FF_{target_metric}_SUM_L1S": "sum"}))
+            vars = config.get_var("extra")[0]
+            print(result.agg({f"{target_metric}_TARGET_PH_{vars['ph']}_CP_{vars['cp']}": "sum", f"FF_{target_metric}_SUM_L1S": "sum"}))
 
         df_all = pd.concat(scenarios, ignore_index=True)
         return df_all

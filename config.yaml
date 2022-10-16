@@ -4,11 +4,11 @@ current_config:
 
 churn_client:
     name: client
-    sql: SELECT * FROM HBG_DATASCIENCE.SANDBOX_ANALYTICS.FCT_CHURN_MODELLING_DATA_AGG limit 100
+    sql: SELECT * FROM HBG_DATASCIENCE.SANDBOX_ANALYTICS.FCT_CHURN_MODELLING_DATA_AGG
     storage: local
     target_metric: GROSS_SALES
     query_predict_data:
-    extra: [{ph: 1, cp: 1}]
+    extra: [{ph: 2, cp: 2}]
     mlflow:
         registered_model_name: churn_client_model
         model_version: 1
